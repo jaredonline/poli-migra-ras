@@ -1,6 +1,6 @@
 class TwiliosController < ActionController::API
   def create
-    result = Drip::Routing::Table.match(twilio_params)
+    result = SmsRouter.match(twilio_params)
 
     if result.should_respond?
       render :text => result
