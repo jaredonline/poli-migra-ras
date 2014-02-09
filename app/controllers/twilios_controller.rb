@@ -3,7 +3,7 @@ class TwiliosController < ActionController::API
     result = SmsRouter.match(twilio_params)
 
     if result.should_respond?
-      render :text => result
+      render :text => result.message
     end
   end
 

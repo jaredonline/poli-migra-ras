@@ -15,6 +15,11 @@ class WatchController < Txt::Controller::Base
     with_user do |user|
       watch = Watch.new(:user => user, :message => self.message)
       if watch.save
+        User.where("id <> ?", user.id).each do |u|
+          u.send_message <<-MESSAGE
+          #{user.name} just initiated a watch: #{self.message}
+          MESSAGE
+        end
         response_message "Watch initiated with message: #{message}"
       else
         response_message "Something went wrong; the watch was not initiated."
