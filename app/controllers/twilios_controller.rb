@@ -1,4 +1,4 @@
-class TwiliosController < ApplicationController
+class TwiliosController < ActionController::API
   def create
     result = Drip::Routing::Table.match(twilio_params)
 
