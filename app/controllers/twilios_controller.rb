@@ -11,7 +11,7 @@ class TwiliosController < ActionController::API
   def twilio_params
     # Massage the phone number
     params["From"] = (params["From"][0..1] == "+1") ? params["From"][2...params["From"].length] : params["From"]
-    params.require("From", "Body")
+    params
   end
 end
 
