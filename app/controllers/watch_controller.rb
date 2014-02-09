@@ -27,6 +27,16 @@ class WatchController < Txt::Controller::Base
     end
   end
 
+  def respond
+    with_user_and_active_watch do |user, watch|
+      watch.user.send_message <<-MESSAGE
+      #{user.name} responds: #{message}
+      MESSAGE
+
+      response_message "Your response was sent to #{watch.user.name}"
+    end
+  end
+
   def finish
     with_active_watch do |watch|
       if user == watch.user
