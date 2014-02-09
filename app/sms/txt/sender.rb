@@ -1,4 +1,4 @@
-module Drip
+module Txt
   class Sender
     def self.send_message(message, to)
       client.account.sms.messages.create(:from => ENV["TWILIO_NUMBER"], :to => to, :body => message)

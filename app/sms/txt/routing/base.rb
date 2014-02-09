@@ -1,4 +1,4 @@
-module Drip
+module Txt
   module Routing
     class Base
       class << self
@@ -17,17 +17,25 @@ module Drip
         end
 
         def match(options)
-          message, number = options.values_at("Body", "From")
-
-          command = message.to_s.upcase.split(" ").first.gsub(/(\!|\,\.\?)+/, "")
+          command, number, message = command_number_and_message(options)
           route   = @route_table.find { |r| r.match?(command) }
 
-          route.call(number)
+          route.call(number, message)
         end
 
         private
         def check_options(options)
-          raise "Your need a fucking controller and action in your routes!" unless options[:controller] && options[:action]
+          raise "All routes need a controller and an action to be valid." unless options[:controller] && options[:action]
+        end
+
+        def command_number_and_message(options)
+          message, number = options.values_at("Body", "From")
+
+          message_array = message.to_s.split(" ")
+          command = message_array.shift.upcase.gsub(/(\!|\,\.\?)+/, "")
+          message = message_array.join(" ")
+
+          return [command, number, message]
         end
       end
     end
@@ -43,12 +51,17 @@ module Drip
       end
 
       def match?(command)
-        (@command == command) || @command.nil?
+        (self.command == command) || self.command.nil?
       end
 
-      def call(number)
-        klass = "#{controller.to_s.camelcase}Controller".constantize
-        klass.perform(action, number)
+      def call(number, message)
+        controller = klass.new(number, action, message)
+        controller.perform
+      end
+
+      private
+      def klass
+        "#{controller.to_s.camelcase}Controller".constantize
       end
     end
   end

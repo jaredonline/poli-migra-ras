@@ -1,4 +1,4 @@
-module Drip
+module Txt
   class Routing::Table < Routing::Base
     route "BREW", :controller => :brews, :action => :new
     route "YES",  :controller => :brews, :action => :subscribe
