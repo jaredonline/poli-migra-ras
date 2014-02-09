@@ -31,6 +31,11 @@ class WatchController < Txt::Controller::Base
     with_active_watch do |watch|
       if user == watch.user
         watch.update_attributes(status: Watch::STATUS[:done])
+        User.where("id <> ?", watch.user_id).each do |u|
+          u.send_message <<-MESSAGE
+          #{watch.user.name} has ended their watch: #{watch.message}
+          MESSAGE
+        end
 
         response_message "Your watch (initiated with \"#{watch.message}\") has been ended."
       else
